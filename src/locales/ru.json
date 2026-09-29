@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "Подписка",
     "injectToCursor": "Переключиться на Cursor",
+    "openDashboard": "Открыть сайт",
+    "openDashboardFailed": "Не удалось открыть сайт",
     "quota": {
       "onDemand": "По запросу"
     },

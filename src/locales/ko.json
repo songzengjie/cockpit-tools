@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "구독",
     "injectToCursor": "Cursor로 전환",
+    "openDashboard": "웹사이트 열기",
+    "openDashboardFailed": "웹사이트를 열지 못했습니다",
     "quota": {
       "onDemand": "온디맨드"
     },

@@ -5943,6 +5943,8 @@
   "cursor": {
     "subscription": "Subscription​",
     "injectToCursor": "Switch to Cursor​",
+    "openDashboard": "Buka Situs Web",
+    "openDashboardFailed": "Gagal membuka situs web",
     "quota": {
       "onDemand": "Sesuai permintaan"
     },

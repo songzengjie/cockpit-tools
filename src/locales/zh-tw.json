@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "訂閱方案",
     "injectToCursor": "切換至 Cursor",
+    "openDashboard": "開啟官網",
+    "openDashboardFailed": "開啟官網失敗",
     "quota": {
       "onDemand": "按需使用"
     },

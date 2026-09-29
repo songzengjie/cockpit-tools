@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "Abonelik",
     "injectToCursor": "Cursor'a geç",
+    "openDashboard": "Web sitesini aç",
+    "openDashboardFailed": "Web sitesi açılamadı",
     "quota": {
       "onDemand": "İsteğe bağlı"
     },

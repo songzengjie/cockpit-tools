@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "サブスクリプション",
     "injectToCursor": "Cursor に切り替え",
+    "openDashboard": "Webサイトを開く",
+    "openDashboardFailed": "Webサイトを開けませんでした",
     "quota": {
       "onDemand": "オンデマンド"
     },

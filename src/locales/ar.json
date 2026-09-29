@@ -5843,6 +5843,8 @@
   "cursor": {
     "subscription": "الاشتراك",
     "injectToCursor": "التبديل إلى Cursor",
+    "openDashboard": "فتح الموقع",
+    "openDashboardFailed": "فشل فتح الموقع",
     "quota": {
       "onDemand": "حسب الطلب"
     },

@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "Gói đăng ký",
     "injectToCursor": "Chuyển sang Cursor",
+    "openDashboard": "Mở trang web",
+    "openDashboardFailed": "Không thể mở trang web",
     "quota": {
       "onDemand": "Theo yêu cầu"
     },

@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "Assinatura",
     "injectToCursor": "Alternar para Cursor",
+    "openDashboard": "Abrir site",
+    "openDashboardFailed": "Falha ao abrir o site",
     "quota": {
       "onDemand": "Sob demanda"
     },

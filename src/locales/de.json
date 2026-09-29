@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "Abonnement",
     "injectToCursor": "Zu Cursor wechseln",
+    "openDashboard": "Website öffnen",
+    "openDashboardFailed": "Website konnte nicht geöffnet werden",
     "quota": {
       "onDemand": "On-Demand​"
     },

@@ -5796,6 +5796,8 @@
   "cursor": {
     "subscription": "Předplatné",
     "injectToCursor": "Přepnout na Cursor",
+    "openDashboard": "Otevřít web",
+    "openDashboardFailed": "Web se nepodařilo otevřít",
     "quota": {
       "onDemand": "Na vyžádání"
     },
