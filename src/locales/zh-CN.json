@@ -6116,6 +6116,8 @@
   "cursor": {
     "subscription": "订阅状态",
     "injectToCursor": "切换到 Cursor",
+    "openDashboard": "打开官网",
+    "openDashboardFailed": "打开官网失败",
     "quota": {
       "onDemand": "按需使用"
     },

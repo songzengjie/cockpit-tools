@@ -142,6 +142,15 @@ pub fn get_cursor_accounts_index_path() -> Result<String, String> {
 }
 
 #[tauri::command]
+pub async fn open_cursor_dashboard(app: AppHandle, account_id: String) -> Result<(), String> {
+    logger::log_info(&format!(
+        "[Cursor Command] 打开官网 Dashboard: account_id={}",
+        account_id
+    ));
+    cursor_account::open_dashboard_window(&app, &account_id).await
+}
+
+#[tauri::command]
 pub fn cursor_oauth_login_start() -> Result<cursor_oauth::CursorOAuthStartResponse, String> {
     logger::log_info("[Cursor Command] OAuth 登录开始");
     cursor_oauth::start_login()

@@ -70,3 +70,8 @@ export async function getCursorAccountsIndexPath(): Promise<string> {
 export async function injectCursorAccount(accountId: string): Promise<string> {
   return await invoke('inject_cursor_account', { accountId });
 }
+
+/** 使用账号会话打开已登录的 Cursor 官网 Dashboard */
+export async function openCursorDashboard(accountId: string): Promise<void> {
+  return await invoke('open_cursor_dashboard', { accountId });
+}

@@ -6116,6 +6116,8 @@
   "cursor": {
     "subscription": "Subscription",
     "injectToCursor": "Switch to Cursor",
+    "openDashboard": "Open Website",
+    "openDashboardFailed": "Failed to open website",
     "quota": {
       "onDemand": "On-Demand"
     },

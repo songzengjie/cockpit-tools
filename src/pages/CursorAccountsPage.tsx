@@ -24,6 +24,7 @@ import {
   EyeOff,
   Lock,
   BookOpen,
+  ExternalLink,
 } from 'lucide-react';
 import { useCursorAccountStore } from '../stores/useCursorAccountStore';
 import * as cursorService from '../services/cursorService';
@@ -194,6 +195,26 @@ export function CursorAccountsPage() {
     currentAccountId,
     formatDate, normalizeTag,
   } = page;
+
+  const [openingDashboard, setOpeningDashboard] = useState<string | null>(null);
+
+  const handleOpenDashboard = useCallback(async (accountId: string) => {
+    if (openingDashboard) return;
+    setOpeningDashboard(accountId);
+    try {
+      await cursorService.openCursorDashboard(accountId);
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error ?? '');
+      setMessage({
+        tone: 'error',
+        text: detail
+          ? `${t('cursor.openDashboardFailed', '打开官网失败')}: ${detail}`
+          : t('cursor.openDashboardFailed', '打开官网失败'),
+      });
+    } finally {
+      setOpeningDashboard(null);
+    }
+  }, [openingDashboard, setMessage, t]);
 
   useEffect(() => {
     if (!filterPersistenceEnabled) {
@@ -757,6 +778,14 @@ export function CursorAccountsPage() {
                 title={isBanned ? t('accounts.status.forbidden_msg') : t('cursor.injectToCursor', '切换到 Cursor')}>
                 {injecting === account.id ? <RefreshCw size={14} className="loading-spinner" /> : <Play size={14} />}
               </button>
+              <button
+                className="card-action-btn"
+                onClick={() => void handleOpenDashboard(account.id)}
+                disabled={openingDashboard === account.id}
+                title={t('cursor.openDashboard', '打开官网')}
+              >
+                {openingDashboard === account.id ? <RefreshCw size={14} className="loading-spinner" /> : <ExternalLink size={14} />}
+              </button>
               <button className="card-action-btn" onClick={() => openTagModal(account.id)} title={t('accounts.editTags', '编辑标签')}>
                 <Tag size={14} />
               </button>
@@ -909,6 +938,14 @@ export function CursorAccountsPage() {
               <button className="action-btn success" onClick={() => handleInjectToVSCode?.(account.id)} disabled={!!injecting || isBanned}
                 title={isBanned ? t('accounts.status.forbidden_msg') : t('cursor.injectToCursor', '切换到 Cursor')}>
                 {injecting === account.id ? <RefreshCw size={14} className="loading-spinner" /> : <Play size={14} />}
+              </button>
+              <button
+                className="action-btn"
+                onClick={() => void handleOpenDashboard(account.id)}
+                disabled={openingDashboard === account.id}
+                title={t('cursor.openDashboard', '打开官网')}
+              >
+                {openingDashboard === account.id ? <RefreshCw size={14} className="loading-spinner" /> : <ExternalLink size={14} />}
               </button>
               <button className="action-btn" onClick={() => openTagModal(account.id)} title={t('accounts.editTags', '编辑标签')}>
                 <Tag size={14} />

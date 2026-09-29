@@ -1420,12 +1420,94 @@ fn extract_workos_user_id(jwt: &str) -> Option<String> {
     }
 }
 
-fn build_session_cookie(access_token: &str) -> Option<String> {
+fn build_session_cookie_value(access_token: &str) -> Option<String> {
     let user_id = extract_workos_user_id(access_token)?;
-    Some(format!(
-        "WorkosCursorSessionToken={}%3A%3A{}",
-        user_id, access_token
-    ))
+    Some(format!("{}%3A%3A{}", user_id, access_token))
+}
+
+fn build_session_cookie(access_token: &str) -> Option<String> {
+    build_session_cookie_value(access_token)
+        .map(|value| format!("WorkosCursorSessionToken={}", value))
+}
+
+const CURSOR_DASHBOARD_WINDOW_LABEL: &str = "cursor-dashboard";
+const CURSOR_DASHBOARD_URL: &str = "https://cursor.com/dashboard";
+
+/// 使用账号会话 Cookie 打开已登录的 Cursor 官网 Dashboard（独立 WebView 窗口）。
+///
+/// Windows 上必须在 async command / 非阻塞上下文中创建 WebviewWindow，
+/// 否则 WebView2 可能死锁并出现空白页。
+pub async fn open_dashboard_window(
+    app: &tauri::AppHandle,
+    account_id: &str,
+) -> Result<(), String> {
+    use tauri::webview::cookie::{Cookie, SameSite};
+    use tauri::{Manager, WebviewUrl, WebviewWindowBuilder};
+    use url::Url;
+
+    let account = load_account(account_id).ok_or_else(|| "账号不存在".to_string())?;
+    let cookie_value = build_session_cookie_value(account.access_token.trim()).ok_or_else(|| {
+        "无法从 accessToken 解析 WorkOS 用户 ID，请先刷新账号或重新导入".to_string()
+    })?;
+
+    if let Some(existing) = app.get_webview_window(CURSOR_DASHBOARD_WINDOW_LABEL) {
+        existing
+            .destroy()
+            .map_err(|error| format!("关闭已有 Cursor 官网窗口失败: {}", error))?;
+    }
+
+    let title = {
+        let email = account.email.trim();
+        if email.is_empty() || email.eq_ignore_ascii_case("unknown") {
+            "Cursor Dashboard".to_string()
+        } else {
+            format!("Cursor Dashboard - {}", email)
+        }
+    };
+
+    let dashboard_url =
+        Url::parse(CURSOR_DASHBOARD_URL).map_err(|error| format!("Dashboard 地址无效: {}", error))?;
+
+    // Windows：async 上下文中创建窗口，避免 WebView2 死锁白屏。
+    // 先打开 about:blank，写入 Cookie 后再导航到 Dashboard。
+    let blank = Url::parse("about:blank").map_err(|error| error.to_string())?;
+    let window =
+        WebviewWindowBuilder::new(app, CURSOR_DASHBOARD_WINDOW_LABEL, WebviewUrl::External(blank))
+            .title(title)
+            .inner_size(1280.0, 860.0)
+            .min_inner_size(900.0, 640.0)
+            .center()
+            .incognito(true)
+            .build()
+            .map_err(|error| format!("创建 Cursor 官网窗口失败: {}", error))?;
+
+    // 给 WebView2 一点初始化时间，避免 set_cookie / navigate 过早无效。
+    tokio::time::sleep(std::time::Duration::from_millis(150)).await;
+
+    let session_cookie = Cookie::build(("WorkosCursorSessionToken", cookie_value))
+        .domain(".cursor.com")
+        .path("/")
+        .secure(true)
+        .http_only(true)
+        .same_site(SameSite::Lax)
+        .build();
+
+    window
+        .set_cookie(session_cookie)
+        .map_err(|error| format!("写入 Cursor 会话 Cookie 失败: {}", error))?;
+
+    window
+        .navigate(dashboard_url)
+        .map_err(|error| format!("打开 Cursor Dashboard 失败: {}", error))?;
+
+    let _ = window.show();
+    let _ = window.set_focus();
+
+    logger::log_info(&format!(
+        "[Cursor Dashboard] 已打开官网: account_id={}, email={}",
+        account.id, account.email
+    ));
+    Ok(())
 }
 
 fn resolve_membership_from_stripe_profile(profile: &CursorStripeProfileResponse) -> Option<String> {
